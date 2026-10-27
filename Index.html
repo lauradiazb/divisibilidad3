@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mates 1º ESO: Divisibilidad, primos, MCD y mcm</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1d2433;--mut:#5b6478;--pri:#4f46e5;--prit:#fff;--ok:#0f8a4f;--okb:#e1f6ea;--ko:#c0392b;--kob:#fde8e6;--bd:#dde1ec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--card:#1e2330;--tx:#eef0f6;--mut:#a3abc0;--pri:#8b83ff;--prit:#14171f;--ok:#5ad699;--okb:#12301f;--ko:#ff8f84;--kob:#3a1a17;--bd:#343b50}}
+:root[data-theme="dark"]{--bg:#14171f;--card:#1e2330;--tx:#eef0f6;--mut:#a3abc0;--pri:#8b83ff;--prit:#14171f;--ok:#5ad699;--okb:#12301f;--ko:#ff8f84;--kob:#3a1a17;--bd:#343b50}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:0 0 4px}
+.sub{color:var(--mut);margin:0 0 12px}
+.stats{display:flex;gap:10px;margin-bottom:12px}
+.stat{flex:1;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 12px;text-align:center}
+.stat b{display:block;font-size:1.5rem;color:var(--pri)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tab{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 12px;border-radius:999px;cursor:pointer;font:inherit}
+.tab[aria-selected="true"]{background:var(--pri);color:var(--prit);border-color:var(--pri);font-weight:600}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px}
+.q{font-size:1.35rem;font-weight:600;margin:6px 0 14px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+button.b{font:inherit;font-weight:600;padding:10px 18px;border-radius:10px;border:2px solid var(--pri);background:var(--pri);color:var(--prit);cursor:pointer;min-width:64px}
+button.b.alt{background:transparent;color:var(--pri)}
+button.b:disabled{opacity:.45;cursor:not-allowed}
+input{font:inherit;padding:9px 12px;border:2px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);width:130px}
+label{display:inline-block;margin:4px 10px 4px 0}
+.fb{margin-top:12px;padding:12px;border-radius:10px;display:none}
+.fb.ok{display:block;background:var(--okb);color:var(--ok)}
+.fb.ko{display:block;background:var(--kob);color:var(--ko)}
+.fb.info{display:block;background:var(--bg);color:var(--tx);border:1px solid var(--bd)}
+.fb p{margin:3px 0}
+.tip{color:var(--mut);font-size:.92rem;margin-top:12px}
+.dec{display:grid;grid-template-columns:90px 70px;margin:8px 0;font-size:1.2rem;font-weight:600}
+.dec span{padding:2px 10px}
+.dec span:nth-child(2n){border-left:3px solid var(--pri);color:var(--pri)}
+.res{font-size:1.2rem;font-weight:700}
+.rank{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 12px;margin-bottom:12px;font-weight:700}
+.bar{height:10px;background:var(--bg);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pri),#f59e0b);transition:width .4s}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);background:var(--pri);color:var(--prit);padding:10px 18px;border-radius:999px;font-weight:700;z-index:50;box-shadow:0 4px 16px #0004;animation:pop .3s}
+@keyframes pop{from{transform:translateX(-50%) scale(.6);opacity:0}}
+.cf{position:fixed;top:-30px;font-size:1.6rem;z-index:40;pointer-events:none;animation:fall 1.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.opts button{font-size:1.1rem;padding:14px 8px}
+.hud{display:flex;justify-content:space-between;font-weight:700;font-size:1.15rem;margin-bottom:8px}
+.tbar{height:12px;background:var(--bg);border-radius:99px;overflow:hidden}.tbar i{display:block;height:100%;width:100%;background:var(--ok);transition:width .25s linear}
+.shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+<main>
+<h1>🔢 Mates 1º ESO</h1>
+<p class="sub">Divisibilidad, primos, descomposición, MCD y mcm</p>
+<div class="stats"><div class="stat"><b id="score">0</b>Puntos</div><div class="stat"><b id="streak">0</b>Racha</div></div>
+<div class="rank"><span id="rk"></span><div class="bar"><i id="rb"></i></div></div>
+<div class="tabs" role="tablist" id="tabs"></div>
+
+<section class="card" id="t0">
+<div class="q" id="dq"></div>
+<div class="btns"><button class="b" id="dy">Sí</button><button class="b alt" id="dn">No</button></div>
+<div class="fb" id="dfb"></div>
+<div class="btns"><button class="b" id="dnext" hidden>Siguiente ➜</button></div>
+<div class="tip">Criterios: 2 (acaba en par), 3 y 9 (suma de cifras), 4 (dos últimas cifras), 5 (acaba en 0 o 5), 6 (2 y 3), 10 (acaba en 0), 11 (suma de cifras en posición par − impar).</div>
+</section>
+
+<section class="card" id="t1" hidden>
+<div class="q" id="pq"></div>
+<div class="btns"><button class="b" id="pp">Primo</button><button class="b" id="pc">Compuesto</button><button class="b alt" id="pn">Ni primo ni compuesto</button></div>
+<div class="fb" id="pfb"></div>
+<div class="btns"><button class="b" id="pnext" hidden>Siguiente ➜</button></div>
+<div class="tip">Primo: solo tiene dos divisores (1 y él mismo). Compuesto: tiene más de dos divisores. El 1 no es ni una cosa ni otra.</div>
+</section>
+
+<section class="card" id="t2" hidden>
+<div class="q" id="xq"></div>
+<div id="xrows"></div>
+<p>Pulsa un número primo por el que dividir:</p>
+<div class="btns" id="xbtns"></div>
+<div class="fb" id="xfb"></div>
+<div class="btns"><button class="b alt" id="xundo">↩ Deshacer</button><button class="b" id="xnext">Nuevo número ➜</button></div>
+</section>
+
+<section class="card" id="t3" hidden>
+<div class="q" id="mq"></div>
+<label>MCD <input id="mg" type="number" inputmode="numeric" min="1"></label>
+<label>mcm <input id="ml" type="number" inputmode="numeric" min="1"></label>
+<div class="btns"><button class="b" id="mcheck">Comprobar</button><button class="b alt" id="mhint">💡 Pista</button><button class="b alt" id="msol">Ver solución</button><button class="b" id="mnext">Nuevo ➜</button></div>
+<div class="fb" id="mfb"></div>
+<div class="tip">MCD: factores comunes con el menor exponente. mcm: factores comunes y no comunes con el mayor exponente.</div>
+</section>
+
+<section class="card" id="t4" hidden>
+<p>Escribe dos números (del 1 al 100000) y mira todo el proceso paso a paso.</p>
+<label>Número A <input id="la" type="number" inputmode="numeric" min="1" value="36"></label>
+<label>Número B <input id="lb" type="number" inputmode="numeric" min="1" value="48"></label>
+<div class="btns"><button class="b" id="lgo">Calcular</button></div>
+<div class="fb" id="lfb"></div>
+</section>
+<section class="card" id="t5" hidden>
+<div id="rstart"><p class="q">⚡ Reto relámpago</p><p>Tienes 45 segundos y 3 vidas ❤️. Cada acierto suma +3 s y puntos dobles. ¡Cada fallo te quita una vida! Preguntas mezcladas de todo el tema.</p><p id="rbest" class="tip"></p><div class="btns"><button class="b" id="rgo">¡Empezar!</button></div></div>
+<div id="rplay" hidden><div class="hud"><span id="rlives"></span><span id="rt"></span><span id="rsc"></span></div><div class="tbar"><i id="rtb"></i></div><div class="q" id="rq" style="margin-top:14px"></div><div class="opts" id="ro"></div></div>
+</section>
+
+<section class="card" id="t6" hidden>
+<div class="q" id="wq"></div>
+<label>Respuesta <input id="wa" type="number" inputmode="numeric" min="1"></label>
+<div class="btns"><button class="b" id="wcheck">Comprobar</button><button class="b alt" id="whint">💡 Pista</button><button class="b alt" id="wsol">Ver solución</button><button class="b" id="wnext">Otro problema ➜</button></div>
+<div class="fb" id="wfb"></div>
+</section>
+<section class="card" id="t7" hidden>
+<div class="q" id="tq"></div>
+<div id="tf"></div>
+<div class="btns"><button class="b" id="ty">Sí</button><button class="b alt" id="tn">No</button><button class="b" id="tcheck">Comprobar</button><button class="b alt" id="thint">💡 Pista</button><button class="b alt" id="tsol">Ver solución</button><button class="b" id="tnext">Otra compra ➜</button></div>
+<div class="fb" id="tfb"></div>
+<div class="tip">Las matemáticas de la vida real: packs y ofertas (mcm), repartos y bolsas iguales (MCD), repartir entre amigos (divisibilidad) y colocar objetos en filas (primos y compuestos).</div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+let score=0,streak=0;
+const RK=['🌱 Aprendiz','🧭 Explorador','🧮 Calculista','🚀 Crack','🧙 Mago','👑 Leyenda'];
+const lv=()=>Math.min(Math.floor(score/15)+1,12);
+function upd(){$('#score').textContent=score;$('#streak').textContent=(streak>=3?'🔥':'')+streak;$('#rk').textContent=RK[Math.min(Math.floor((lv()-1)/2),5)]+' · Nivel '+lv();$('#rb').style.width=(score%15)/15*100+'%'}
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),1800)}
+function confetti(){for(let i=0;i<28;i++){const s=document.createElement('span');s.className='cf';s.textContent=['🎉','⭐','✨','🔢','🎈'][i%5];s.style.left=R(0,95)+'vw';s.style.animationDelay=R(0,500)+'ms';document.body.appendChild(s);setTimeout(()=>s.remove(),2400)}}
+function good(p){const L=lv();score+=p||1;streak++;if(streak%5==0){score+=2;toast('🔥 ¡Racha de '+streak+'! +2 extra')}upd();if(lv()>L){confetti();toast('⬆️ ¡Nivel '+lv()+'!')}}
+function bad(){streak=0;upd()}
+function show(el,cls,html){el.className='fb '+cls;el.innerHTML=html}
+const SUP='⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sup=n=>String(n).split('').map(d=>SUP[d]).join('');
+function factorize(n){const f=[];for(let p=2;p*p<=n;p++)while(n%p==0){f.push(p);n/=p}if(n>1)f.push(n);return f}
+function cnt(f){const o={};f.forEach(p=>o[p]=(o[p]||0)+1);return o}
+function fmt(f){if(!f.length)return '1';const c=cnt(f);return Object.keys(c).map(Number).sort((a,b)=>a-b).map(p=>c[p]>1?p+sup(c[p]):p).join(' · ')}
+const isPrime=n=>n>1&&factorize(n).length==1;
+function divisors(n){const d=[];for(let i=1;i<=n;i++)if(n%i==0)d.push(i);return d}
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function explain(a,b){
+ const fa=factorize(a),fb=factorize(b),ca=cnt(fa),cb=cnt(fb);
+ const ps=[...new Set([...fa,...fb])].sort((x,y)=>x-y);
+ const mg=[],ml=[];
+ ps.forEach(p=>{const x=ca[p]||0,y=cb[p]||0;for(let i=0;i<Math.min(x,y);i++)mg.push(p);for(let i=0;i<Math.max(x,y);i++)ml.push(p)});
+ const g=mg.reduce((s,p)=>s*p,1),l=ml.reduce((s,p)=>s*p,1);
+ return {g,l,html:`<p>${a} = ${fmt(fa)}</p><p>${b} = ${fmt(fb)}</p>
+ <p><b>MCD</b> (factores comunes con menor exponente): ${mg.length?fmt(mg)+' = ':'no hay factores comunes → '}<b>${g}</b></p>
+ <p><b>mcm</b> (todos los factores con mayor exponente): ${fmt(ml)} = <b>${l}</b></p>
+ <p>Comprobación: MCD × mcm = ${g} × ${l} = ${g*l} y ${a} × ${b} = ${a*b} ✔</p>`};
+}
+
+/* Pestañas */
+const names=['Divisibilidad','Primos','Descomponer','MCD y mcm','Laboratorio','⚡ Reto','📖 Problemas','🛒 Tienda'];
+names.forEach((n,i)=>{const b=document.createElement('button');b.className='tab';b.textContent=n;b.setAttribute('role','tab');b.setAttribute('aria-selected',i==0);b.onclick=()=>tab(i);$('#tabs').appendChild(b)});
+function tab(i){if(i!=5)endR(true);[...$('#tabs').children].forEach((b,j)=>b.setAttribute('aria-selected',i==j));for(let j=0;j<8;j++)$('#t'+j).hidden=(j!=i)}
+
+/* 1. Divisibilidad */
+let D;
+function why(n,d){
+ const s=String(n),dg=s.split('').map(Number),sum=dg.reduce((a,b)=>a+b,0),ok=n%d==0;
+ const y=ok?'sí':'no';let t='';
+ if(d==2)t=`Termina en ${s.slice(-1)}, que ${ok?'es':'no es'} par.`;
+ if(d==3||d==9)t=`Suma de cifras: ${dg.join(' + ')} = ${sum}. ${sum%d==0?'Es':'No es'} múltiplo de ${d}.`;
+ if(d==4)t=`Las dos últimas cifras forman ${Number(s.slice(-2))}, que ${ok?'sí':'no'} es múltiplo de 4.`;
+ if(d==5)t=`Termina en ${s.slice(-1)}: ${ok?'sí':'no'} es 0 ni 5`.replace('sí es','es').replace('no es','no es')+'.';
+ if(d==10)t=`Termina en ${s.slice(-1)}: ${ok?'es':'no es'} 0.`;
+ if(d==6)t=`Divisible entre 2: ${n%2==0?'sí':'no'}. Divisible entre 3 (suma ${sum}): ${n%3==0?'sí':'no'}. Para el 6 deben cumplirse las dos.`;
+ if(d==11){let a=0,b=0;dg.forEach((x,i)=>i%2?b+=x:a+=x);t=`Cifras en posición impar: ${a}; en posición par: ${b}. Diferencia = ${Math.abs(a-b)}, ${Math.abs(a-b)%11==0?'múltiplo':'no múltiplo'} de 11.`}
+ if(d==5)t=ok?`Termina en ${s.slice(-1)} (0 o 5).`:`Termina en ${s.slice(-1)}, ni 0 ni 5.`;
+ return `<p>${t}</p><p>Comprobación: ${n} = ${d} × ${Math.floor(n/d)} + ${n%d}</p>`;
+}
+function newD(){
+ const ds=[2,3,4,5,6,9,10,11],d=ds[R(0,7)];
+ const mx=99+lv()*800,n=Math.random()<.5?d*R(Math.ceil(10/d),Math.floor(mx/d)):R(10,mx);
+ D={n,d,done:false};
+ $('#dq').textContent=`¿Es ${n} divisible entre ${d}?`;
+ $('#dfb').className='fb';$('#dnext').hidden=true;$('#dy').disabled=$('#dn').disabled=false;
+}
+function ansD(a){
+ if(D.done)return;D.done=true;
+ const t=D.n%D.d==0,ok=a==t;
+ show($('#dfb'),ok?'ok':'ko',`<p><b>${ok?'¡Correcto! 🎉':'Casi… '+(t?'sí':'no')+' es divisible.'}</b></p>`+why(D.n,D.d));
+ ok?good():bad();
+ $('#dy').disabled=$('#dn').disabled=true;$('#dnext').hidden=false;
+}
+$('#dy').onclick=()=>ansD(true);$('#dn').onclick=()=>ansD(false);$('#dnext').onclick=newD;
+
+/* 2. Primos y compuestos */
+let P;
+function newP(){
+ const n=Math.random()<.1?1:R(2,120);
+ P={n,done:false};
+ $('#pq').textContent=`El número ${n} es…`;
+ $('#pfb').className='fb';$('#pnext').hidden=true;['#pp','#pc','#pn'].forEach(s=>$(s).disabled=false);
+}
+function ansP(a){
+ if(P.done)return;P.done=true;const n=P.n;
+ const t=n==1?'n':isPrime(n)?'p':'c',ok=a==t;
+ let e;
+ if(t=='n')e='El 1 solo tiene un divisor (él mismo), así que no es primo ni compuesto.';
+ else if(t=='p')e=`${n} solo es divisible entre 1 y ${n}. Es primo.`;
+ else{const f=factorize(n)[0];e=`${n} = ${f} × ${n/f}. Es compuesto. Divisores: ${divisors(n).join(', ')}.`}
+ show($('#pfb'),ok?'ok':'ko',`<p><b>${ok?'¡Correcto! 🎉':'No es esa.'}</b></p><p>${e}</p>`);
+ ok?good():bad();
+ ['#pp','#pc','#pn'].forEach(s=>$(s).disabled=true);$('#pnext').hidden=false;
+}
+$('#pp').onclick=()=>ansP('p');$('#pc').onclick=()=>ansP('c');$('#pn').onclick=()=>ansP('n');$('#pnext').onclick=newP;
+
+/* 3. Descomponer */
+let X;
+[2,3,5,7,11,13].forEach(p=>{const b=document.createElement('button');b.className='b';b.textContent=p;b.onclick=()=>stepX(p);$('#xbtns').appendChild(b)});
+function drawX(){
+ let h='<div class="dec">';
+ X.rows.forEach(r=>h+=`<span>${r[0]}</span><span>${r[1]}</span>`);
+ h+=`<span>${X.cur}</span><span></span></div>`;
+ $('#xrows').innerHTML=h;
+ [...$('#xbtns').children].forEach(b=>b.disabled=X.cur==1);
+}
+function newX(){
+ let n;do{n=R(12,150+lv()*60)}while(isPrime(n)||factorize(n).some(p=>p>13));
+ X={n,cur:n,rows:[]};
+ $('#xq').textContent=`Descompón ${n} en factores primos`;
+ $('#xfb').className='fb';drawX();
+}
+function stepX(p){
+ if(X.cur==1)return;
+ if(X.cur%p){show($('#xfb'),'ko',`${X.cur} no es divisible entre ${p}. Prueba con otro primo.`);bad();return}
+ X.rows.push([X.cur,p]);X.cur/=p;drawX();
+ if(X.cur==1){show($('#xfb'),'ok',`<p class="res">${X.n} = ${fmt(X.rows.map(r=>r[1]))}</p><p>¡Descomposición completa! 🎉</p>`);good(2)}
+ else $('#xfb').className='fb';
+}
+$('#xundo').onclick=()=>{if(!X.rows.length)return;const r=X.rows.pop();X.cur=r[0];$('#xfb').className='fb';drawX()};
+$('#xnext').onclick=newX;
+
+/* 4. MCD y mcm */
+let M;
+function newM(){
+ let x,y;do{x=R(2,7+lv());y=R(2,7+lv())}while(x==y);
+ const g=R(1,4+lv());M={a:g*x,b:g*y,done:false};
+ $('#mq').textContent=`Calcula el MCD y el mcm de ${M.a} y ${M.b}`;
+ $('#mg').value=$('#ml').value='';$('#mfb').className='fb';
+}
+$('#mcheck').onclick=()=>{
+ const e=explain(M.a,M.b),g=parseInt($('#mg').value),l=parseInt($('#ml').value);
+ if(isNaN(g)||isNaN(l)){show($('#mfb'),'info','Escribe los dos resultados (MCD y mcm) antes de comprobar.');return}
+ const og=g==e.g,ol=l==e.l;
+ if(og&&ol){show($('#mfb'),'ok',`<p><b>¡Perfecto! 🎉</b> MCD = ${e.g} y mcm = ${e.l}</p>`);if(!M.done){good(3);M.done=true}}
+ else{show($('#mfb'),'ko',`<p>${og?'MCD correcto ✔':'MCD incorrecto ✘'} · ${ol?'mcm correcto ✔':'mcm incorrecto ✘'}</p><p>Pulsa «Pista» si necesitas ayuda.</p>`);bad()}
+};
+$('#mhint').onclick=()=>{const a=factorize(M.a),b=factorize(M.b);show($('#mfb'),'info',`<p>Descomposición:</p><p>${M.a} = ${fmt(a)}</p><p>${M.b} = ${fmt(b)}</p><p>MCD: comunes con menor exponente. mcm: comunes y no comunes con mayor exponente.</p>`)};
+$('#msol').onclick=()=>{const e=explain(M.a,M.b);show($('#mfb'),'info',e.html);if(!M.done){M.done=true;bad()}};
+$('#mnext').onclick=newM;
+
+/* 5. Laboratorio */
+$('#lgo').onclick=()=>{
+ const a=Number($('#la').value),b=Number($('#lb').value);
+ if(!Number.isInteger(a)||!Number.isInteger(b)||a<1||b<1||a>100000||b>100000){show($('#lfb'),'ko','Escribe dos números enteros entre 1 y 100000.');return}
+ const kind=n=>n==1?'ni primo ni compuesto':isPrime(n)?'primo':'compuesto';
+ const e=explain(a,b);
+ show($('#lfb'),'info',`<p>${a} es ${kind(a)}. Divisores: ${divisors(a).join(', ')}</p><p>${b} es ${kind(b)}. Divisores: ${divisors(b).join(', ')}</p><hr>`+e.html);
+};
+['la','lb'].forEach(id=>$('#'+id).addEventListener('keydown',e=>{if(e.key=='Enter')$('#lgo').click()}));
+['mg','ml'].forEach(id=>$('#'+id).addEventListener('keydown',e=>{if(e.key=='Enter')$('#mcheck').click()}));
+
+/* Reto relámpago */
+let G={},best=0;
+const sh=a=>{for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+function mk(c,gen){const s=new Set([c]);let k=0;while(s.size<4&&k++<300)s.add(gen());return sh([...s])}
+function pair(L){let x,y;do{x=R(2,7+L);y=R(2,7+L)}while(x==y);const g=R(2,5+(L>>1));return [g*x,g*y]}
+function qR(){
+ const t=R(0,4),L=lv();
+ if(t==0){const d=[3,4,6,9,11][R(0,4)],c=String(d*R(5,80+L*10));return {q:`¿Cuál de estos números es divisible entre ${d}?`,c,o:mk(c,()=>{let x;do{x=R(50,999+L*50)}while(x%d==0);return String(x)})}}
+ if(t==1){let p;do{p=R(11,120+L*5)}while(!isPrime(p));return {q:'¿Cuál de estos números es PRIMO?',c:String(p),o:mk(String(p),()=>{let x;do{x=R(10,120+L*5)}while(isPrime(x));return String(x)})}}
+ if(t==2){const [a,b]=pair(L),c=gcd(a,b);return {q:`MCD de ${a} y ${b}`,c:String(c),o:mk(String(c),()=>String(Math.max(1,c+R(-4,4))))}}
+ if(t==3){const [a,b]=pair(L),c=a*b/gcd(a,b);return {q:`mcm de ${a} y ${b}`,c:String(c),o:mk(String(c),()=>String([a*b,c*2,c+a,c+b,c+R(1,9),Math.abs(c-R(1,9))][R(0,5)]))}}
+ let n;do{n=R(20,200+L*30)}while(isPrime(n));const c=fmt(factorize(n));
+ return {q:`¿Cuál es la descomposición en factores primos de ${n}?`,c,o:mk(c,()=>fmt(factorize(n+R(-8,8))))};
+}
+function drawR(){$('#rlives').textContent='❤️'.repeat(G.l)+'🖤'.repeat(3-G.l);$('#rt').textContent='⏱ '+Math.max(0,Math.ceil(G.t))+' s';$('#rsc').textContent='⭐ '+G.s;$('#rtb').style.width=Math.min(100,G.t/45*100)+'%'}
+function nextR(){G.cur=qR();$('#rq').textContent=G.cur.q;const o=$('#ro');o.innerHTML='';G.cur.o.forEach(v=>{const b=document.createElement('button');b.className='b alt';b.textContent=v;b.onclick=()=>ansR(v);o.appendChild(b)});drawR()}
+function startR(){clearInterval(G.iv);G={t:45,l:3,s:0,on:true};$('#rstart').hidden=true;$('#rplay').hidden=false;nextR();G.iv=setInterval(()=>{G.t-=.25;if(G.t<=0){endR();return}drawR()},250)}
+function ansR(v){if(!G.on)return;if(v==G.cur.c){G.s+=2;G.t=Math.min(60,G.t+3);good(1)}else{G.l--;bad();const c=$('#t5');c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');toast('✘ Era '+G.cur.c);if(G.l<=0){endR();return}}nextR()}
+function endR(silent){if(!G.on)return;G.on=false;clearInterval(G.iv);$('#rplay').hidden=true;$('#rstart').hidden=false;if(silent)return;if(G.s>best)best=G.s;$('#rbest').textContent=`Fin de la partida: ${G.s} ⭐ · Récord: ${best} ⭐`;if(G.s>=10)confetti()}
+$('#rgo').onclick=startR;
+
+/* Problemas */
+const PB=[
+ ['g',(a,b)=>`Tienes ${a} caramelos de fresa y ${b} de limón. Quieres hacer el mayor número posible de bolsas iguales, sin que sobre ninguno. ¿Cuántas bolsas harás?`],
+ ['g',(a,b)=>`Una cuerda de ${a} m y otra de ${b} m se cortan en trozos iguales, lo más largos posible y sin que sobre nada. ¿Cuánto mide cada trozo (en m)?`],
+ ['g',(a,b)=>`Un suelo rectangular de ${a} dm × ${b} dm se cubre con baldosas cuadradas lo más grandes posible, sin cortar ninguna. ¿Cuánto mide el lado de cada baldosa (en dm)?`],
+ ['l',(a,b)=>`Un autobús sale cada ${a} min y otro cada ${b} min. Acaban de salir juntos. ¿Dentro de cuántos minutos volverán a salir a la vez?`],
+ ['l',(a,b)=>`Dos luces parpadean, una cada ${a} s y otra cada ${b} s. Si se encienden a la vez, ¿cada cuántos segundos coinciden?`],
+ ['l',(a,b)=>`Ana va a la biblioteca cada ${a} días y Luis cada ${b} días. Hoy coinciden. ¿Dentro de cuántos días volverán a coincidir?`]
+];
+let W;
+function newW(){
+ const p=PB[R(0,5)],[a,b]=pair(Math.min(lv(),4)),e=explain(a,b);
+ W={a,b,t:p[0],ans:p[0]=='g'?e.g:e.l,html:e.html,done:false};
+ $('#wq').textContent=p[1](a,b);$('#wa').value='';$('#wfb').className='fb';
+}
+$('#wcheck').onclick=()=>{
+ const v=parseInt($('#wa').value);
+ if(isNaN(v)){show($('#wfb'),'info','Escribe tu respuesta antes de comprobar.');return}
+ if(v==W.ans){show($('#wfb'),'ok',`<p><b>¡Genial! 🎉</b> La respuesta es ${W.ans}.</p><p>Era un problema de ${W.t=='g'?'MCD':'mcm'}.</p>`);if(!W.done){W.done=true;good(3)}}
+ else{show($('#wfb'),'ko','<p>Esa no es. ¡Inténtalo otra vez!</p><p>Pulsa «Pista» si no sabes si es MCD o mcm.</p>');bad()}
+};
+$('#whint').onclick=()=>show($('#wfb'),'info',W.t=='g'?'<p>Se reparte o se corta en partes iguales, lo más grande posible → piensa en el <b>MCD</b>.</p>':'<p>Algo que se repite y vuelve a coincidir → piensa en el <b>mcm</b>.</p>');
+$('#wsol').onclick=()=>{show($('#wfb'),'info',`<p>Es un problema de <b>${W.t=='g'?'MCD':'mcm'}</b>: ${W.ans}</p>`+W.html);if(!W.done){W.done=true;bad()}};
+$('#wnext').onclick=newW;
+$('#wa').addEventListener('keydown',e=>{if(e.key=='Enter')$('#wcheck').click()});
+
+newD();newP();newX();newM();/* Tienda */
+let T;
+const HD={3:'Suma las cifras: si es múltiplo de 3, lo es el número.',4:'Mira las dos últimas cifras.',5:'Mira si acaba en 0 o en 5.',6:'Tiene que ser divisible entre 2 y entre 3.',9:'Suma las cifras: si es múltiplo de 9, lo es el número.'};
+function newT(){
+ const t=R(0,4),[a,b]=pair(1),e=explain(a,b),g=e.g,l=e.l;
+ if(t==0)T={q:`🛒 En la papelería los lápices se venden en cajas de ${a} y las gomas en paquetes de ${b}. Quieres tener los mismos lápices que gomas, comprando lo mínimo. ¿Cuántas cajas y cuántos paquetes compras?`,f:[['Cajas',l/a],['Paquetes',l/b]],h:`Busca el menor número que esté en las tablas de ${a} y de ${b}: es el mcm. Luego divide entre lo que trae cada envase.`,s:e.html+`<p>Compras ${l/a} cajas (${l} lápices) y ${l/b} paquetes (${l} gomas).</p>`};
+ if(t==1)T={q:`🎁 Tienes ${a} bolígrafos y ${b} cuadernos. Quieres preparar el mayor número posible de bolsas de regalo iguales, sin que sobre nada. ¿Cuántas bolsas haces y qué lleva cada una?`,f:[['Bolsas',g],['Bolis por bolsa',a/g],['Cuadernos por bolsa',b/g]],h:'Se reparte en partes iguales, lo más grande posible: es el MCD. Las bolsas son el MCD y después divides cada cantidad entre las bolsas.',s:e.html+`<p>${g} bolsas, con ${a}÷${g} = ${a/g} bolis y ${b}÷${g} = ${b/g} cuadernos cada una.</p>`};
+ if(t==2){const k=[3,4,5,6,9][R(0,4)],n=Math.random()<.5?k*R(Math.ceil(100/k),Math.floor(999/k)):R(100,999);T={q:`🍦 En el súper hay un pack de ${n} yogures. ¿Puedes repartirlos a partes iguales entre ${k} amigos sin que sobre ninguno?`,yn:n%k==0,f:[],h:HD[k],s:`<p>${n} = ${k} × ${Math.floor(n/k)} + ${n%k}. ${n%k?'Sobran '+n%k+' yogures.':'No sobra ninguno.'}</p>`}}
+ if(t==3){const n=R(7,61),p=isPrime(n),f=factorize(n)[0];T={q:`🪴 Tienes ${n} macetas y quieres colocarlas en filas iguales, con más de una fila y más de una maceta por fila. ¿Se puede?`,yn:!p,f:[],h:'Pregúntate si el número es primo o compuesto.',s:p?`<p>${n} es primo: solo se puede hacer 1 fila de ${n}.</p>`:`<p>${n} = ${f} × ${n/f}: ${f} filas de ${n/f} macetas.</p>`}}
+ if(t==4)T={q:`🏷️ En una tienda regalan una mochila cada ${a} clientes y un bono cada ${b} clientes. ¿Qué número de cliente es el primero que recibe las dos cosas?`,f:[['Cliente nº',l]],h:'Cada cuánto coinciden las dos ofertas: es el mcm.',s:e.html};
+ T.done=false;
+ const yn=T.yn!==undefined;
+ $('#tq').textContent=T.q;
+ $('#tf').innerHTML=T.f.map((x,i)=>`<label>${x[0]} <input id="tf${i}" type="number" inputmode="numeric" min="0"></label>`).join('');
+ $('#ty').hidden=$('#tn').hidden=!yn;$('#tcheck').hidden=yn;$('#ty').disabled=$('#tn').disabled=false;$('#tfb').className='fb';
+}
+function ansT(a){if(T.done)return;T.done=true;const ok=a==T.yn;show($('#tfb'),ok?'ok':'ko',`<p><b>${ok?'¡Correcto! 🎉':'No era esa.'}</b></p>`+T.s);ok?good(2):bad();$('#ty').disabled=$('#tn').disabled=true}
+$('#ty').onclick=()=>ansT(true);$('#tn').onclick=()=>ansT(false);
+$('#tcheck').onclick=()=>{
+ const v=T.f.map((x,i)=>parseInt($('#tf'+i).value));
+ if(v.some(isNaN)){show($('#tfb'),'info','Rellena todas las casillas antes de comprobar.');return}
+ const r=v.map((x,i)=>x==T.f[i][1]);
+ if(r.every(Boolean)){show($('#tfb'),'ok','<p><b>¡Perfecto! 🎉</b> Todo correcto.</p>');if(!T.done){T.done=true;good(3)}}
+ else{show($('#tfb'),'ko',r.map((x,i)=>`<p>${T.f[i][0]}: ${x?'✔':'✘'}</p>`).join('')+'<p>Pulsa «Pista» si necesitas ayuda.</p>');bad()}
+};
+$('#thint').onclick=()=>show($('#tfb'),'info','<p>'+T.h+'</p>');
+$('#tsol').onclick=()=>{const yn=T.yn!==undefined;show($('#tfb'),'info',`<p><b>Respuesta: ${yn?(T.yn?'Sí':'No'):T.f.map(x=>x[0]+' = '+x[1]).join(' · ')}</b></p>`+T.s);if(!T.done){T.done=true;bad();$('#ty').disabled=$('#tn').disabled=true}};
+$('#tnext').onclick=newT;
+['tf0','tf1','tf2'].forEach(()=>{});
+document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id&&e.target.id.startsWith('tf'))$('#tcheck').click()});
+newT();
+
+newW();upd();$('#rbest').textContent='Récord: 0 ⭐';
+</script>
+</body>
+</html>
